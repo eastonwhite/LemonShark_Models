@@ -66,10 +66,6 @@ for (g in 1:(no.runs)){
 
 		}#end of time loop 
 
-#call for mean/var of whole time period after initial
-#J_var[g]= var(J[50:(max.time)])
-#J_mean[g]= mean(J[50:(max.time)])
-
 
 #call to randomly select 17 year chunks from each trial after accounting for 100 years of transition dynamics
 Sequence=sample(100:(max.time), size=1, replace=TRUE) #15
