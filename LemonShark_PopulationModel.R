@@ -1,11 +1,14 @@
 
 #This script runs a population model for lemon sharks in a nursery lagoon in Bimini, Bahamas. 
 #This model is desribed in White et al 2014 "Modeling 
+#Currently the script using a Poisson process to calculate litter sizes but this can be modified to use a litter size distribution from a genetic study (see below and paper)
+
+#this code has not been optimized for speed
 
 #Created by Easton R. White 
 #Created: 17-Apr-2012
 #Last edited: 14-Apr-2014
-#North Sound, Bimini Bahamas model
+#First uploaded to GitHub on 14-Apr-2014
 
 #Intial condition for Lemon shark population size
 IC= c(30,30,10,15,15,5,5,3,3,3,3,3,2,2,2,2,2,2,1,1,1,1,2,2,2,2)
@@ -16,8 +19,7 @@ no.runs= 10
 #keep track of variance and mean of Juvenile population size over a series of runs with the model
 J_var= matrix(0,nrow=1,ncol=no.runs)
 J_mean= matrix(0,nrow=1,ncol=no.runs)
-mortality_age0 = matrix(0,nrow=1,ncol=no.runs)
-lambda=matrix(0,nrow=1,ncol=no.runs)
+
 
 #Probablities for different litter sizes (see paper for details) based on genetic data
 birthprob=c(0.02272727,0.14772727,0.113636,0.143939,0.0757575,0.1022727,0.06060606,0.0492424,0.09848484,0.0643939,0.04166666,0.034090909,0.02272727,0.00378787,0.0151515,0,0,0.0037878)
@@ -25,7 +27,7 @@ birthprob=c(0.02272727,0.14772727,0.113636,0.143939,0.0757575,0.1022727,0.060606
 
 for (g in 1:(no.runs)){
 
-	max.time = 30
+	max.time = 300
 	#set up matrix (Lemons) to track number of individuals in each age class over time and matrix (Stable_age) to track the age distribution through time
 	Lemons = matrix(IC,nrow= 26,ncol=max.time)
 	Stable_age =matrix(0,nrow=26,ncol=max.time)
@@ -39,6 +41,7 @@ for (g in 1:(no.runs)){
 	S =  sum(Lemons[4:12,1])   #subadults who have left the lagoon and cannot reproduce
 	A =  sum(Lemons[13:26,1])  #adults who can reproduce
 	
+	#initialize parameters (these are desribed in the paper)
 	b=6.087   #Number of offspring per female 8.3 from Feldheim 2002, 6.7 from 
 	h=1   	  #hill coefficient
 	k=100     #half saturation constant (Estimated from Gruber 2001)
@@ -61,29 +64,20 @@ for (g in 1:(no.runs)){
 		
 		Stable_age[1:26,j]=(Lemons[1:26,j]/sum(Lemons[1:26,j]))*100
 
-}#need for outer loop
+		}#end of time loop 
 
 #call for mean/var of whole time period after initial
-J_var[g]= var(J[50:(max.time)])
-J_mean[g]= mean(J[50:(max.time)])
+#J_var[g]= var(J[50:(max.time)])
+#J_mean[g]= mean(J[50:(max.time)])
 
 
-#call to randomly select 17 year chunks from each trial
-zzz=sample(100:(max.time), size=1, replace=TRUE) #15
-J_var[g]= var(J[(zzz-16):zzz])   #15
-J_mean[g]= mean(J[(zzz-16):zzz])
+#call to randomly select 17 year chunks from each trial after accounting for 100 years of transition dynamics
+Sequence=sample(100:(max.time), size=1, replace=TRUE) #15
+J_var[g]= var(J[(Sequence-16):Sequence])   #15
+J_mean[g]= mean(J[(Sequence-16):Sequence])
 
 
-mortality=matrix(0,nrow=1,ncol=300)
-for (i in 2:299){
-mortality[1,i]=(Lemons[1,i-1]-Lemons[2,i])/(Lemons[1,i-1])
-}
-mortality1=c(mortality[1,2:299])
-mortality_age0[g]=mean(mortality1)
-
-
-lambda[g]=mean(w[102:300]/w[101:299])
-}
+}#end of trial loop 
 
 J_var = c(J_var)
 J_mean= c(J_mean)
