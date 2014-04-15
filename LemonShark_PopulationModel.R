@@ -1,6 +1,6 @@
 
 #This script runs a population model for lemon sharks in a nursery lagoon in Bimini, Bahamas. 
-#This model is desribed in White et al 2014 "Modeling lemon shark population dynamics"
+#This model is desribed in White et al 2014 "Modeling lemon shark population dynamics" https://peerj.com/preprints/364/
 #Currently the script using a Poisson process to calculate litter sizes but this can be modified to use a litter size distribution from a genetic study (see below and paper)
 
 #this code has not been optimized for speed
