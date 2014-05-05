@@ -1,7 +1,7 @@
 LemonShark_Models
 =================
 
-Models used on Lemon shark population modeling project (White et al 2014)
+Models used on Lemon shark population modeling project (White et al 2014- submitted to Biology Direct)
 
 
 The script LemonShark_PopulationModel.R runs a age-structured stochastic model of lemon sharks in Bimini, Bahamas. The model is desribed in a PeerJ PrePrint:
